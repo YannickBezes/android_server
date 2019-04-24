@@ -35,7 +35,21 @@ def get_group(current_user, name):
     if group.public == False and current_user not in group.subscribers:
         return jsonify({'success': False, 'message': 'You don\'t have the right to access to this group'})    
 
-    return jsonify({ 'success': True, 'data': serialize_group(group) })
+    return jsonify({'success': True, 'data': serialize_group(group)})
+
+
+@app.route('{}/group/<name>/posts'.format(base_url), methods=['GET'])
+@token_required
+def get_posts(current_user, name):
+    group = Group.query.filter_by(name=name).first()
+
+    if not group:
+        return jsonify({'success': False, 'message': 'No group found'})
+    
+    if group.public == False and current_user not in group.subscribers:
+        return jsonify({'success': False, 'message': 'You don\'t have the right to acces to this group'})
+    
+    return jsonify({'success': True, 'data': serialize_group(group, only_message=True)})
 
 
 @app.route('{}/group'.format(base_url), methods=['POST'])
@@ -46,7 +60,7 @@ def create_group(current_user):
     # Check if group already exist
     is_exist = Group.query.filter_by(name=data['name']).first() is not None
     if is_exist:
-        return jsonify({'success': False, 'message': "Name already use"})
+        return jsonify({'success': False, 'message': "Group already exist"})
 
     new_group = Group() # Create the new group
     for key in Group.__dict__:
@@ -73,7 +87,7 @@ def post_message(current_user, name):
         return jsonify({'success': False, 'message': 'No group found'})
     
     post = Post(date=datetime.now().strftime("%d/%m/%Y-%H:%M"), content=data['content'])
-    post.user = current_user
+    post.user = current_user # Add current user to the post as the sender
     group.posts.append(post)
 
     db.session.commit()

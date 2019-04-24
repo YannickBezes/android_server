@@ -41,17 +41,18 @@ def serialize_user(user):
     return user_data
 
 
-def serialize_group(group):
+def serialize_group(group, only_message=False):
     """
     Method for serialize a group
     """
     group_data = {}
 
-    group_data['name'] = group.name
-    group_data['public'] = group.public
-    group_data['subscribers'] = []
-    for user in group.subscribers:
-        group_data['subscribers'].append(user.username)
+    if not only_message:
+        group_data['name'] = group.name
+        group_data['public'] = group.public
+        group_data['subscribers'] = []
+        for user in group.subscribers:
+            group_data['subscribers'].append(user.username)
 
     # Parse messages
     group_data['posts'] = []
