@@ -3,7 +3,7 @@ from config import db
 
 class Shop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String(50), unique=True)
     keywords = db.Column(db.String(255))
     lat = db.Column(db.String(18))
     lng = db.Column(db.String(18))

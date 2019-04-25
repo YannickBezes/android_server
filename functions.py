@@ -60,3 +60,7 @@ def serialize_group(group, only_message=False):
         group_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
 
     return group_data
+
+
+def serialize_shop(shop):
+    pass
