@@ -9,9 +9,11 @@ from functions import *
 from model import *
 
 
-@app.route('{}/user'.format(base_url), methods=['GET'])
-@token_required
-def get_all_user(current_user):
+@app.route('{}/user'.format(base_url), methods=['GET', 'POST'])
+# @token_required
+def get_all_user():
+    if request.method == "POST":
+        print request.get_json()
     users = User.query.all()
 
     output = []
