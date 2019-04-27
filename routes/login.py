@@ -10,17 +10,19 @@ from model import *
 
 @app.route('{}/login'.format(base_url))
 def login():
-    auth = request.authorization
+    auth = request.get_json()
 
-    if not auth or not auth.username or not auth.password:
+    auth['password'] = auth['password'].decode('base64') # Decode password
+
+    if not auth or not auth['username'] or not auth['password']:
         return make_response('Could not verify your auth', 401, {'WWW-Authenticate': 'Basic realm="Login required:"'})
     
-    user = User.query.filter_by(username=auth.username).first()
+    user = User.query.filter_by(username=auth['username']).first()
 
     if not user:
         return make_response('Could not verify your auth', 401, {'WWW-Authenticate': 'Basic realm="Login required:"'})
     
-    if check_password_hash(user.password, auth.password):
+    if check_password_hash(user.password, auth['password']):
         token = jwt.encode({'username': user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)}, app.config['SECRET_KEY'])
         return jsonify({'token': token.decode('UTF-8')})
         
