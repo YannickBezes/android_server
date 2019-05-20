@@ -8,11 +8,9 @@ from config import *
 # Import all models and tables
 from model import *
 
-@app.route('{}/login'.format(base_url))
+@app.route('{}/login'.format(base_url), methods=['POST'])
 def login():
     auth = request.get_json()
-
-    auth['password'] = auth['password'].decode('base64') # Decode password
 
     if not auth or not auth['username'] or not auth['password']:
         return make_response('Could not verify your auth', 401, {'WWW-Authenticate': 'Basic realm="Login required:"'})

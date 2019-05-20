@@ -9,7 +9,7 @@ from functions import *
 from model import *
 
 
-@app.route('{}/user'.format(base_url), methods=['GET', 'POST'])
+@app.route('{}/user'.format(base_url), methods=['GET'])
 # @token_required
 def get_all_user():
     if request.method == "POST":
