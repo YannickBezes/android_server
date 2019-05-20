@@ -7,6 +7,7 @@ class User(db.Model):
     lastname = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255))
     gender = db.Column(db.String(6))
     height = db.Column(db.Float())
     weight = db.Column(db.Float())

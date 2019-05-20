@@ -11,5 +11,8 @@ import model
 # Import routes
 import routes
 
+# If the database is not create
+db.create_all()
+
 if __name__ == '__main__':
     app.run("0.0.0.0", 5000)
