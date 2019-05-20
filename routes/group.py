@@ -10,7 +10,7 @@ from functions import *
 from model import *
 
 
-@app.route('{}/group'.format(base_url), methods=['GET'])
+@app.route('{}/network'.format(base_url), methods=['GET'])
 @token_required
 def get_all_group(current_user):
     groups = Group.query.all()
@@ -24,7 +24,7 @@ def get_all_group(current_user):
     return jsonify({'success': True, 'groups': output})
     
 
-@app.route('{}/group/<name>'.format(base_url), methods=['GET'])
+@app.route('{}/network/<name>'.format(base_url), methods=['GET'])
 @token_required
 def get_group(current_user, name):
     group = Group.query.filter_by(name=name).first()
@@ -38,7 +38,7 @@ def get_group(current_user, name):
     return jsonify({'success': True, 'data': serialize_group(group)})
 
 
-@app.route('{}/group/<name>/posts'.format(base_url), methods=['GET'])
+@app.route('{}/network/<name>/posts'.format(base_url), methods=['GET'])
 @token_required
 def get_posts(current_user, name):
     group = Group.query.filter_by(name=name).first()
@@ -52,7 +52,7 @@ def get_posts(current_user, name):
     return jsonify({'success': True, 'data': serialize_group(group, only_message=True)})
 
 
-@app.route('{}/group'.format(base_url), methods=['POST'])
+@app.route('{}/network'.format(base_url), methods=['POST'])
 @token_required
 def create_group(current_user):
     data = request.get_json()
@@ -76,7 +76,7 @@ def create_group(current_user):
     return jsonify({'success': True, 'data': serialize_group(new_group)})
 
 
-@app.route('{}/group/<name>'.format(base_url), methods=['POST'])
+@app.route('{}/network/<name>'.format(base_url), methods=['POST'])
 @token_required
 def post_message(current_user, name):
     data = request.get_json()
@@ -95,7 +95,7 @@ def post_message(current_user, name):
     return jsonify({'success': True, 'data': {}})
 
 
-@app.route('{}/group/<name>/<username>'.format(base_url), methods=['PUT'])
+@app.route('{}/network/<name>/<username>'.format(base_url), methods=['PUT'])
 @token_required
 def add_user(current_user, name, username):
     group = Group.query.filter_by(name=name).first()
@@ -114,7 +114,7 @@ def add_user(current_user, name, username):
     return jsonify({'success': True, 'data': serialize_group(group)})
 
 
-@app.route('{}/group/<name>'.format(base_url), methods=['PUT'])
+@app.route('{}/network/<name>'.format(base_url), methods=['PUT'])
 @token_required
 def update_group(current_user, name):
     group = Group.query.filter_by(name=name).first()
@@ -138,7 +138,7 @@ def update_group(current_user, name):
     return jsonify({'success': True, 'data': serialize_group(group)})
 
 
-@app.route('{}/group/<name>'.format(base_url), methods=['DELETE'])
+@app.route('{}/network/<name>'.format(base_url), methods=['DELETE'])
 @token_required
 def delete_group(current_user, name):
     group = Group.query.filter_by(name=name).first()

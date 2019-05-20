@@ -41,25 +41,25 @@ def serialize_user(user):
     return user_data
 
 
-def serialize_group(group, only_message=False):
+def serialize_network(network, only_message=False):
     """
-    Method for serialize a group
+    Method for serialize a network
     """
-    group_data = {}
+    network_data = {}
 
     if not only_message:
-        group_data['name'] = group.name
-        group_data['public'] = group.public
-        group_data['subscribers'] = []
-        for user in group.subscribers:
-            group_data['subscribers'].append(user.username)
+        network_data['name'] = network.name
+        network_data['public'] = network.public
+        network_data['subscribers'] = []
+        for user in network.subscribers:
+            network_data['subscribers'].append(user.username)
 
     # Parse messages
-    group_data['posts'] = []
-    for post in group.posts:
-        group_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
+    network_data['posts'] = []
+    for post in network.posts:
+        network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
 
-    return group_data
+    return network_data
 
 
 def serialize_shop(shop):
