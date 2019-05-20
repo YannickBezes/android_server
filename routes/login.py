@@ -13,15 +13,15 @@ def login():
     auth = request.get_json()
 
     if not auth or not auth['username'] or not auth['password']:
-        return make_response('Could not verify your auth', 401, {'WWW-Authenticate': 'Basic realm="Login required:"'})
+        return jsonify({'success': False, 'message': "Login required"})
     
     user = User.query.filter_by(username=auth['username']).first()
 
     if not user:
-        return make_response('Could not verify your auth', 401, {'WWW-Authenticate': 'Basic realm="Login required:"'})
+        return jsonify({'success': False, 'message': "Login required"})
     
     if check_password_hash(user.password, auth['password']):
         token = jwt.encode({'username': user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)}, app.config['SECRET_KEY'])
-        return jsonify({'token': token.decode('UTF-8')})
+        return jsonify({'success': True, 'token': token.decode('UTF-8')})
         
-    return make_response('Could not verify your auth', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
+    return jsonify({'success': False, 'message': "Login required"})
