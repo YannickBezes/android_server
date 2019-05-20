@@ -56,7 +56,7 @@ def create_user():
     except:
         return jsonify({'success': False, 'message': 'Username already use'})
 
-    return jsonify({'success': True, 'data': serialize_user(new_user)})
+    return jsonify({'success': True})
 
 
 @app.route('{}/user/<username>'.format(base_url), methods=['PUT'])
