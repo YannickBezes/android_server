@@ -64,3 +64,25 @@ def serialize_network(network, only_message=False):
 
 def serialize_shop(shop):
     pass
+
+
+def parse_weather(weather):
+    output = {}
+
+    for key in weather.keys():
+        if key not in ['base', 'cod', 'coord', 'dt', 'id', 'rain', 'sys']:
+            if key in 'weather':
+                for sub_key in weather[key][0]:
+                    output[sub_key] = weather[key][0][sub_key]
+            else:
+                if key in 'main':
+                    for sub_key in weather[key]:
+                        output[sub_key] = weather[key][sub_key]
+                else:
+                    if key in 'clouds':
+                        output[key] = weather[key]['all']
+                    else:
+                        output[key] = weather[key]
+
+    del output['grnd_level'], output['icon'], output['id']
+    return output

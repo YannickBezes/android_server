@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime
+import requests
 from flask import request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -10,11 +10,23 @@ from functions import *
 from model import *
 
 
-@app.route('{}/weather/<lat>/<lng>'.format(base_url), methods=['GET'])
+@app.route('{}/weather'.format(base_url), methods=['GET'])
 @token_required
 def get_weather(current_user):
     ## Exernal request to an external api and parse it
-    output = {}
+    url = "http://api.openweathermap.org/data/2.5/weather"
+
+    params = dict(
+        lat=request.args.get('lat'),
+        lon=request.args.get('lng'),
+        units="metric",
+        lang=request.args.get('lang'),
+        appid=OPENWEATHER_API_KEY
+    )
+    response =  requests.get(url=url, params=params)
+    data = response.json()
+
+    output = parse_weather(data)
 
     return jsonify({'success': True, 'weather': output})
     

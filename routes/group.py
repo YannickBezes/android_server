@@ -9,7 +9,7 @@ from functions import *
 # Import all models and tables
 from model import *
 
-
+# GET ALL NETWORKS
 @app.route('{}/network'.format(base_url), methods=['GET'])
 @token_required
 def get_all_group(current_user):
@@ -21,9 +21,9 @@ def get_all_group(current_user):
         if group.public == True or current_user in group.subscribers:
             output.append(serialize_network(group))
 
-    return jsonify({'success': True, 'groups': output})
+    return jsonify({'success': True, 'networks': output})
     
-
+# GET A NETWORK
 @app.route('{}/network/<name>'.format(base_url), methods=['GET'])
 @token_required
 def get_group(current_user, name):
@@ -37,7 +37,7 @@ def get_group(current_user, name):
 
     return jsonify({'success': True, 'data': serialize_network(group)})
 
-
+# GET ALL POSTS FROM A NETWORK
 @app.route('{}/network/<name>/posts'.format(base_url), methods=['GET'])
 @token_required
 def get_posts(current_user, name):
@@ -52,6 +52,7 @@ def get_posts(current_user, name):
     return jsonify({'success': True, 'data': serialize_network(group, only_message=True)})
 
 
+# CREATE A GROUP
 @app.route('{}/network'.format(base_url), methods=['POST'])
 @token_required
 def create_group(current_user):
@@ -75,7 +76,7 @@ def create_group(current_user):
     db.session.commit()
     return jsonify({'success': True, 'data': serialize_network(new_group)})
 
-
+# ADD A POST TO A GROUP
 @app.route('{}/network/<name>'.format(base_url), methods=['POST'])
 @token_required
 def post_message(current_user, name):
@@ -94,7 +95,7 @@ def post_message(current_user, name):
 
     return jsonify({'success': True, 'data': {}})
 
-
+# ADD A USER TO A GROUP
 @app.route('{}/network/<name>/<username>'.format(base_url), methods=['PUT'])
 @token_required
 def add_user(current_user, name, username):
@@ -114,6 +115,7 @@ def add_user(current_user, name, username):
     return jsonify({'success': True, 'data': serialize_network(group)})
 
 
+# UPDATE A NETWORK
 @app.route('{}/network/<name>'.format(base_url), methods=['PUT'])
 @token_required
 def update_group(current_user, name):
@@ -138,6 +140,7 @@ def update_group(current_user, name):
     return jsonify({'success': True, 'data': serialize_network(group)})
 
 
+# DELETE A NETWORK
 @app.route('{}/network/<name>'.format(base_url), methods=['DELETE'])
 @token_required
 def delete_group(current_user, name):
