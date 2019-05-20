@@ -1,4 +1,5 @@
 import jwt
+import datetime
 from flask import request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -56,7 +57,9 @@ def create_user():
     except:
         return jsonify({'success': False, 'message': 'Username already use'})
 
-    return jsonify({'success': True})
+    token = jwt.encode({'username': new_user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)}, app.config['SECRET_KEY'])
+
+    return jsonify({'success': True, 'token': token})
 
 
 @app.route('{}/user/<username>'.format(base_url), methods=['PUT'])
