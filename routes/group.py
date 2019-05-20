@@ -19,7 +19,7 @@ def get_all_group(current_user):
     for group in groups:
         # Check if the group is public or the current user is in the group
         if group.public == True or current_user in group.subscribers:
-            output.append(serialize_group(group))
+            output.append(serialize_network(group))
 
     return jsonify({'success': True, 'groups': output})
     
@@ -35,7 +35,7 @@ def get_group(current_user, name):
     if group.public == False and current_user not in group.subscribers:
         return jsonify({'success': False, 'message': 'You don\'t have the right to access to this group'})    
 
-    return jsonify({'success': True, 'data': serialize_group(group)})
+    return jsonify({'success': True, 'data': serialize_network(group)})
 
 
 @app.route('{}/network/<name>/posts'.format(base_url), methods=['GET'])
@@ -49,7 +49,7 @@ def get_posts(current_user, name):
     if group.public == False and current_user not in group.subscribers:
         return jsonify({'success': False, 'message': 'You don\'t have the right to acces to this group'})
     
-    return jsonify({'success': True, 'data': serialize_group(group, only_message=True)})
+    return jsonify({'success': True, 'data': serialize_network(group, only_message=True)})
 
 
 @app.route('{}/network'.format(base_url), methods=['POST'])
@@ -73,7 +73,7 @@ def create_group(current_user):
     # Update database
     db.session.add(new_group)
     db.session.commit()
-    return jsonify({'success': True, 'data': serialize_group(new_group)})
+    return jsonify({'success': True, 'data': serialize_network(new_group)})
 
 
 @app.route('{}/network/<name>'.format(base_url), methods=['POST'])
@@ -111,7 +111,7 @@ def add_user(current_user, name, username):
 
     db.session.commit()
 
-    return jsonify({'success': True, 'data': serialize_group(group)})
+    return jsonify({'success': True, 'data': serialize_network(group)})
 
 
 @app.route('{}/network/<name>'.format(base_url), methods=['PUT'])
@@ -135,7 +135,7 @@ def update_group(current_user, name):
     except:
         return jsonify({'success': False, 'message': 'Name already use'})
 
-    return jsonify({'success': True, 'data': serialize_group(group)})
+    return jsonify({'success': True, 'data': serialize_network(group)})
 
 
 @app.route('{}/network/<name>'.format(base_url), methods=['DELETE'])
@@ -151,4 +151,4 @@ def delete_group(current_user, name):
     db.session.delete(group)
     db.session.commit()
 
-    return jsonify({'success': True, 'data': serialize_group(group)})
+    return jsonify({'success': True, 'data': serialize_network(group)})
