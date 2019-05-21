@@ -10,7 +10,7 @@ from functions import *
 from model import *
 
 # GET ALL NETWORKS
-@app.route('{}/network'.format(base_url), methods=['GET'])
+@app.route('{}/networks'.format(base_url), methods=['GET'])
 @token_required
 def get_all_group(current_user):
     groups = Group.query.all()
@@ -23,6 +23,20 @@ def get_all_group(current_user):
 
     return jsonify({'success': True, 'networks': output})
     
+# GET NEWORKS OF A USER
+@app.route('{}/network'.format(base_url), methods=['GET'])
+@token_required
+def get_all_group_user(current_user):
+    groups = Group.query.all()
+
+    output = []
+    for group in groups:
+        # Check if the user is suscribe to the group
+        if current_user in group.subscribers:
+            output.append(serialize_network(group))
+        
+    return jsonify({'success': True, 'networks': output})
+
 # GET A NETWORK
 @app.route('{}/network/<name>'.format(base_url), methods=['GET'])
 @token_required
