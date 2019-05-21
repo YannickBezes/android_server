@@ -168,7 +168,7 @@ def accept_sub_request(current_user, name, username):
     group.subscribers.append(user)
     db.session.commit()
 
-    return jsonify({'success': True})
+    return jsonify({'success': True })
     
 
 # UPDATE A NETWORK
