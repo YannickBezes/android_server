@@ -43,9 +43,6 @@ def get_group(current_user, name):
     if not group:
         return jsonify({'success': False, 'message': 'No group found'})
 
-    if group.public == False and current_user not in group.subscribers:
-        return jsonify({'success': False, 'message': 'You don\'t have the right to access to this group'})    
-
     return jsonify({'success': True, 'data': serialize_network(group)})
 
 # GET ALL POSTS FROM A NETWORK
