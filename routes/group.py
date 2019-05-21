@@ -104,7 +104,7 @@ def post_message(current_user, name):
 
     db.session.commit()
 
-    return jsonify({'success': True })
+    return jsonify({'success': True, 'network': serialize_network(group)})
 
 # ADD A USER TO A GROUP
 @app.route('{}/network/<name>/<username>'.format(base_url), methods=['PUT'])

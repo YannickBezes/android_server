@@ -62,6 +62,8 @@ def serialize_network(network, only_message=False):
     network_data['posts'] = []
     for post in network.posts:
         network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
+    
+    network_data['posts'].reverse()
 
     return network_data
 
