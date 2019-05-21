@@ -171,6 +171,34 @@ def accept_sub_request(current_user, name, username):
     return jsonify({'success': True })
     
 
+# REFUSE A SUB REQUEST
+@app.route('{}/network/<name>/reject/<username>'.format(base_url), methods=['PUT'])
+@token_required
+def reject_sub_request(current_user, name, username):
+    group = Group.query.filter_by(name=name).first()  # Get the first group/network
+    
+    if not group:  # If the network doesn't exist -> ERROR
+        return jsonify({'success': False, 'message': 'No network found'})
+    
+     # If the current user is not a subscriber of the group he can't accept the sub request
+    if current_user not in group.subscribers:
+        return jsonify({'success': False, 'message': 'You don\'t have the right'})
+    
+    user = User.query.filter_by(username=username).first() # Get the user wich we want to add
+
+    if not user:
+        return jsonify({'success': False, 'message': 'User does not exist'})
+
+    if user not in group.sub_requests:
+        return jsonify({'success': False, 'message': 'User does not have send a request to this network'})
+
+    # Delete the user from sub request
+    group.sub_requests.remove(user)
+    db.session.commit()
+
+    return jsonify({'success': True})
+
+
 # UPDATE A NETWORK
 @app.route('{}/network/<name>'.format(base_url), methods=['PUT'])
 @token_required
@@ -179,7 +207,6 @@ def update_group(current_user, name):
     if not group:
         return jsonify({'success': False, 'message': 'No group found'})
     
-    print current_user
     if current_user not in group.subscribers:
         return jsonify({'success': False, 'message': 'You don\'t have the right to modify this group'})
     
