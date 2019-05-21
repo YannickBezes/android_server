@@ -53,6 +53,9 @@ def serialize_network(network, only_message=False):
         network_data['subscribers'] = []
         for user in network.subscribers:
             network_data['subscribers'].append(user.username)
+        network_data['sub_requests'] = []
+        for user in network.sub_requests:
+            network_data['sub_requests'].append(user.username)
 
     # Parse messages
     network_data['posts'] = []
@@ -86,3 +89,7 @@ def parse_weather(weather):
 
     del output['grnd_level'], output['icon'], output['id']
     return output
+
+
+def parse_news(news):
+    pass

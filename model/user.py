@@ -1,5 +1,5 @@
 from config import db
-from model.table import subs, Post
+from model.table import subs, sub_requests 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +18,7 @@ class User(db.Model):
     interest = db.Column(db.Text())
 
     subscriptions = db.relationship('Group', secondary=subs, backref=db.backref('subscribers', lazy='dynamic'))
+    subscription_requests = db.relationship('Group', secondary=sub_requests, backref=db.backref('sub_requests', lazy='dynamic'))
 
     def __repr__(self):
         return '<User %r>' % self.username
