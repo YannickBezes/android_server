@@ -63,7 +63,7 @@ def serialize_network(network, only_message=False):
     for post in network.posts:
         network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
     
-    network_data['posts'].reverse()
+    network_data['posts'].reverse() # Reverse to add the last post in first
 
     return network_data
 
