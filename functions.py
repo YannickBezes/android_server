@@ -1,4 +1,5 @@
 import jwt
+from datetime import datetime
 from flask import request, jsonify
 from functools import wraps
 from config import app
@@ -91,5 +92,19 @@ def parse_weather(weather):
     return output
 
 
-def parse_news(news):
-    pass
+def parse_articles(articles):
+    output = []
+
+    # Select articles
+    articles = articles['articles']['results']
+
+    for article in articles:
+        for key in ['dataType', 'eventUri', 'isDuplicate', 'lang', 'sentiment', 'sim', 'date', 'time', 'uri', 'wgt', 'authors']:
+            del article[key] # Delete key that we don't want
+
+        article['dateTime'] = datetime.strptime(article['dateTime'][:-1], '%Y-%m-%dT%H:%M:%S').strftime('%d/%m/%Y-%H:%M')
+        article['source'] = article['source']['title'] # Just put the title as a source
+
+        output.append(article)
+
+    return output
