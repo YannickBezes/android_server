@@ -62,28 +62,24 @@ def create_user():
     return jsonify({'success': True, 'token': token})
 
 
-@app.route('{}/user/<username>'.format(base_url), methods=['PUT'])
+@app.route('{}/user'.format(base_url), methods=['PUT'])
 @token_required
-def update_user(current_user, username):
-    user = User.query.filter_by(username=username).first()
+def update_user(current_user):
+    data = request.get_json() # Get request data
 
-    if not user:
-        return jsonify({'success': False, 'message': 'No user found'})
-
-    data = request.get_json()
-    for key in user.__dict__:
+    for key in current_user.__dict__:
         if key in data.keys():
             if key == 'password':
-                setattr(user, key, generate_password_hash(data['password'], method='sha512'))
+                setattr(current_user, key, generate_password_hash(data['password'], method='sha512'))
             else:
-                setattr(user, key, data[key])
+                setattr(current_user, key, data[key])
 
     try:
         db.session.commit()
     except:
-        return jsonify({'success': False, 'message': 'Username already use'})
-
-    return jsonify({'success': True, 'data': serialize_user(user) })
+        return jsonify({'success': False, 'message': 'Error on update'})
+    
+    return jsonify({'success': True, 'data': serialize_user(current_user) })
 
 
 @app.route('{}/user/<username>'.format(base_url), methods=['DELETE'])
