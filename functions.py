@@ -95,7 +95,7 @@ def parse_weather(weather):
                     else:
                         output[key] = weather[key]
 
-    del output['grnd_level'], output['icon'], output['id']
+    del output['icon'], output['id']
     return output
 
 
