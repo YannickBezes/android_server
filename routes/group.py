@@ -61,9 +61,9 @@ def get_posts(current_user, name):
 
 
 # GET ALL SUB REQUESTS
-@app.route('{}/network<name>/requests'.format(base_url), methods=['GET'])
+@app.route('{}/network/<name>/requests'.format(base_url), methods=['GET'])
 @token_required
-def get_all_sub_requests(current_user):
+def get_all_sub_requests(current_user, name):
     group = Group.query.filter_by(name=name).first()
 
     if not group:
