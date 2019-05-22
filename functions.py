@@ -1,6 +1,7 @@
 import jwt
 import datetime
 import math
+import decimal
 from flask import request, jsonify
 from functools import wraps
 from config import app
@@ -142,12 +143,14 @@ def parse_articles(articles):
     return output
 
 
-def distance(lat_1, lng_1, lat_2, lng_2):  
-    dist = math.sqrt((lat_2 - lat_1)**2 + (lng_2- lng_1)**2)
+def distance(lat_1, lng_1, lat_2, lng_2):
+    D = decimal.Decimal
+
+    dist = math.sqrt((D(lat_2) - D(lat_1))**2 + (D(lng_2) - D(lng_1))**2)
     return dist
 
 
-def insertion_sort(arr, lat, lng):
+def sort_by_distance(arr, lat, lng):
     for i in range(len(arr)):
         cursor = arr[i]
         pos = i

@@ -41,15 +41,15 @@ def get_all_shops_category(current_user, category_name):
 
 
 # GET ALL SHOPS LOCATION
-@app.route('{}/shops'.format(base_url), methods=['GET'])
+@app.route('{}/shops/location'.format(base_url), methods=['GET'])
 @token_required
 def get_all_shops_location(current_user):
     shops = Shop.query.all()
 
+
     output = []
     for shop in shops:
-        if shop.category.name == category.name:
-            output.append(serialize_shop(shop))
+        output.append(serialize_shop(shop))
     
     # Sort by distance
     output = sort_by_distance(output, request.args.get('lat'), request.args.get('lng'))
