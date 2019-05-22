@@ -1,5 +1,6 @@
 import jwt
 import datetime
+import math
 from flask import request, jsonify
 from functools import wraps
 from config import app
@@ -96,7 +97,9 @@ def serialize_category(category, shop=True):
         category_data['shops'] = []
         for shop in category.shops:
             category_data['shops'].append(shop.name)    
-
+    else:
+        del category_data['shops']
+    
     return category_data
 
 def parse_weather(weather):
@@ -137,3 +140,23 @@ def parse_articles(articles):
         output.append(article)
 
     return output
+
+
+def distance(lat_1, lng_1, lat_2, lng_2):  
+    dist = math.sqrt((lat_2 - lat_1)**2 + (lng_2- lng_1)**2)
+    return dist
+
+
+def insertion_sort(arr, lat, lng):
+    for i in range(len(arr)):
+        cursor = arr[i]
+        pos = i
+        
+        while pos > 0 and distance(lat, lng, arr[pos - 1]['lat'], arr[pos - 1]['lng']) > distance(lat, lng, cursor['lat'], cursor['lng']):
+            # Swap the number down the list
+            arr[pos] = arr[pos - 1]
+            pos -= 1
+        # Break and do the final swap
+        arr[pos] = cursor
+
+    return arr

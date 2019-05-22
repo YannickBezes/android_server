@@ -20,7 +20,41 @@ def get_all_shop(current_user):
         output.append(serialize_shop(shop))
 
     return jsonify({'success': True, 'shops': output})
+
+
+# GET ALL SHOPS BY CATEGORY
+@app.route('{}/shops/<category_name>'.format(base_url), methods=['GET'])
+@token_required
+def get_all_shops_category(current_user, category_name):
+    shops = Shop.query.all()
+    category = Category.query.filter_by(name=category_name).first()
+
+    if not category:
+        return jsonify({'success': False, 'message': 'No category found'})
+
+    output = []
+    for shop in shops:
+        if shop.category.name == category.name:
+            output.append(serialize_shop(shop))
     
+    return jsonify({'success': True, 'shops': output})
+
+
+# GET ALL SHOPS LOCATION
+@app.route('{}/shops'.format(base_url), methods=['GET'])
+@token_required
+def get_all_shops_location(current_user):
+    shops = Shop.query.all()
+
+    output = []
+    for shop in shops:
+        if shop.category.name == category.name:
+            output.append(serialize_shop(shop))
+    
+    # Sort by distance
+    output = sort_by_distance(output, request.args.get('lat'), request.args.get('lng'))
+
+    return jsonify({'success': True, 'shops': output})
 
 # GET A SHOP
 @app.route('{}/shop/<name>'.format(base_url), methods=['GET'])
