@@ -19,7 +19,7 @@ def get_all_group():
         output.append(serialize_network(group))
 
     return jsonify({'success': True, 'networks': output})
-    
+
 # GET NEWORKS OF A USER
 @app.route('{}/network'.format(base_url), methods=['GET'])
 @token_required
@@ -62,6 +62,17 @@ def get_posts(current_user, name):
     
     return jsonify({'success': True, 'data': serialize_network(group, only_message=True)})
 
+
+# GET ALL SUB REQUESTS
+@app.route('{}/network<name>/requests'.format(base_url), methods=['GET'])
+@token_required
+def get_all_sub_requests(current_user):
+    group = Group.query.filter_by(name=name).first()
+
+    if not group:
+        return jsonify({'success': False, 'message': 'No network found'})
+
+    return jsonify({'success': True, 'sub_requests': serialize_network(group, only_sub_request=True)})
 
 # CREATE A GROUP
 @app.route('{}/network'.format(base_url), methods=['POST'])

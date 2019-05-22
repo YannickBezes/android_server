@@ -42,28 +42,33 @@ def serialize_user(user):
     return user_data
 
 
-def serialize_network(network, only_message=False):
+def serialize_network(network, only_message=False, only_sub_request=False):
     """
     Method for serialize a network
     """
     network_data = {}
+    if not only_sub_request:
+        if not only_message:
+            network_data['name'] = network.name
+            network_data['public'] = network.public
+            network_data['subscribers'] = []
+            for user in network.subscribers:
+                network_data['subscribers'].append(user.username)
+            network_data['sub_requests'] = []
+            for user in network.sub_requests:
+                network_data['sub_requests'].append(user.username)
 
-    if not only_message:
-        network_data['name'] = network.name
-        network_data['public'] = network.public
-        network_data['subscribers'] = []
-        for user in network.subscribers:
-            network_data['subscribers'].append(user.username)
-        network_data['sub_requests'] = []
+        # Parse messages
+        network_data['posts'] = []
+        for post in network.posts:
+            network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
+        
+        network_data['posts'].reverse() # Reverse to add the last post in first
+    else:
+        # If we want only sub request create a list with all sub requests
+        network_data = []
         for user in network.sub_requests:
-            network_data['sub_requests'].append(user.username)
-
-    # Parse messages
-    network_data['posts'] = []
-    for post in network.posts:
-        network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
-    
-    network_data['posts'].reverse() # Reverse to add the last post in first
+            network_data.append(user.username)
 
     return network_data
 
