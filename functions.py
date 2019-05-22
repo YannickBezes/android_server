@@ -38,11 +38,11 @@ def serialize_user(user):
     """
     user_data = {}
     for key in User.__dict__:
-        if key[0] != '_' and key not in ['password', 'id']:
+        if key[0] != '_' and key not in ['password', 'id', 'subscription_requests']:
             if key == 'subscriptions':
                 user_data[key] = []
                 for network in user.subscriptions:
-                    user_data[key].append(serialize_network(network))
+                    user_data[key].append(network.name)
             else:
                 user_data[key] = getattr(user, key)
 
