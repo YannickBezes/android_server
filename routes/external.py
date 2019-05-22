@@ -9,7 +9,7 @@ from functions import *
 # Import all models and tables
 from model import *
 
-
+# GET WEATHER
 @app.route('{}/weather'.format(base_url), methods=['GET'])
 @token_required
 def get_weather(current_user):
@@ -28,7 +28,7 @@ def get_weather(current_user):
 
     return jsonify({'success': True, 'weather': parse_weather(data)})
 
-
+# GET NEWS
 @app.route('{}/news'.format(base_url), methods=['GET'])
 @token_required
 def get_news(current_user):

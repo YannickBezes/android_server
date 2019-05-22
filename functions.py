@@ -1,9 +1,9 @@
 import jwt
-from datetime import datetime
+import datetime
 from flask import request, jsonify
 from functools import wraps
 from config import app
-from model.user import User
+from model import *
 
 # Method for token check
 def token_required(f):
@@ -35,8 +35,8 @@ def serialize_user(user):
     Method for serialize an user
     """
     user_data = {}
-    for key in user.__dict__:
-        if key not in ['password', '_sa_instance_state', 'id']:
+    for key in User.__dict__:
+        if key[0] != '_' and key not in ['password', 'id']:
             user_data[key] = getattr(user, key)
 
     return user_data
@@ -74,8 +74,30 @@ def serialize_network(network, only_message=False, only_sub_request=False):
 
 
 def serialize_shop(shop):
-    pass
+    shop_data = {}
 
+    for key in Shop.__dict__:
+        if key[0] != '_' and key not in ['id', 'category_id']:
+            shop_data[key] = getattr(shop, key)
+    
+    shop_data['category'] = serialize_category(shop.category, shop=False)
+
+    return shop_data
+
+
+def serialize_category(category, shop=True):
+    category_data = {}
+
+    for key in Category.__dict__:
+        if key[0] != '_' and key not in ['id']:
+            category_data[key] = getattr(category, key)
+
+    if shop:
+        category_data['shops'] = []
+        for shop in category.shops:
+            category_data['shops'].append(shop.name)    
+
+    return category_data
 
 def parse_weather(weather):
     output = {}
@@ -109,7 +131,7 @@ def parse_articles(articles):
         for key in ['dataType', 'eventUri', 'isDuplicate', 'lang', 'sentiment', 'sim', 'date', 'time', 'uri', 'wgt', 'authors']:
             del article[key] # Delete key that we don't want
 
-        article['dateTime'] = datetime.strptime(article['dateTime'][:-1], '%Y-%m-%dT%H:%M:%S').strftime('%d/%m/%Y-%H:%M')
+        article['dateTime'] = datetime.datetime.strptime(article['dateTime'][:-1], '%Y-%m-%dT%H:%M:%S').strftime('%d/%m/%Y-%H:%M')
         article['source'] = article['source']['title'] # Just put the title as a source
 
         output.append(article)

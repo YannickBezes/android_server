@@ -8,6 +8,7 @@ from config import *
 # Import all models and tables
 from model import *
 
+# LOGIN
 @app.route('{}/login'.format(base_url), methods=['POST'])
 def login():
     auth = request.get_json()

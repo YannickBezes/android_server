@@ -10,11 +10,10 @@ from functions import *
 from model import *
 
 
-@app.route('{}/user'.format(base_url), methods=['GET'])
-# @token_required
-def get_all_user():
-    if request.method == "POST":
-        print request.get_json()
+# GET ALL USERS
+@app.route('{}/users'.format(base_url), methods=['GET'])
+@token_required
+def get_all_user(current_user):
     users = User.query.all()
 
     output = []
@@ -24,6 +23,7 @@ def get_all_user():
     return jsonify({'success': True, 'users': output})
     
 
+# GET A USER
 @app.route('{}/user/<username>'.format(base_url), methods=['GET'])
 @token_required
 def get_user(current_user, username):
@@ -38,6 +38,7 @@ def get_user(current_user, username):
     return jsonify({ 'success': True, 'data': serialize_user(user) })
 
 
+# CREATE A USER
 @app.route('{}/user'.format(base_url), methods=['POST'])
 def create_user():
     data = request.get_json()
@@ -55,13 +56,14 @@ def create_user():
     try:
         db.session.commit()
     except:
-        return jsonify({'success': False, 'message': 'Username already use'})
+        return jsonify({'success': False, 'message': 'Error on create'})
 
     token = jwt.encode({'username': new_user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)}, app.config['SECRET_KEY'])
 
-    return jsonify({'success': True, 'token': token})
+    return jsonify({'success': True, 'token': token.decode('UTF-8')})
 
 
+# UPDATE A USER
 @app.route('{}/user'.format(base_url), methods=['PUT'])
 @token_required
 def update_user(current_user):
@@ -82,6 +84,7 @@ def update_user(current_user):
     return jsonify({'success': True, 'data': serialize_user(current_user) })
 
 
+# DELETE A USER
 @app.route('{}/user/<username>'.format(base_url), methods=['DELETE'])
 @token_required
 def delete_user(current_user, username):
@@ -93,4 +96,4 @@ def delete_user(current_user, username):
     db.session.delete(user)
     db.session.commit()
 
-    return jsonify({'success': True, 'data': serialize_user(user)})
+    return jsonify({'success': True})

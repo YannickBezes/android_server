@@ -9,7 +9,8 @@ from functions import *
 from model import *
 
 
-@app.route('{}/shop'.format(base_url), methods=['GET'])
+# GET ALL SHOPS
+@app.route('{}/shops'.format(base_url), methods=['GET'])
 @token_required
 def get_all_shop(current_user):
     shops = Shop.query.all()
@@ -21,6 +22,7 @@ def get_all_shop(current_user):
     return jsonify({'success': True, 'shops': output})
     
 
+# GET A SHOP
 @app.route('{}/shop/<name>'.format(base_url), methods=['GET'])
 @token_required
 def get_shop(current_user, name):
@@ -29,28 +31,38 @@ def get_shop(current_user, name):
     if not shop:
         return jsonify({'success': False, 'message': 'No shop found'})
 
-    return jsonify({ 'success': True, 'data': serialize_shop(shop) })
+    return jsonify({'success': True, 'shop': serialize_shop(shop)})
 
 
+# CREATE A SHOP
 @app.route('{}/shop'.format(base_url), methods=['POST'])
-def create_shop():
+@token_required
+def create_shop(current_user):
     data = request.get_json()
 
+    # Get the category
+    category = Category.query.filter_by(name=data['category']).first()
+
+    if not category:
+        return jsonify({'success': False, 'message': 'No category found'})
+    data['category'] = category # Replace category string by an instance of category
+
+    # Add all properties
     new_shop = Shop()
     for key in Shop.__dict__:
         if key in data.keys():
             setattr(new_shop, key, data[key])
-    
-    db.session.add(new_shop)
 
+    db.session.add(new_shop)
     try:
         db.session.commit()
     except:
-        return jsonify({'success': False, 'message': 'Name already use'})
+        return jsonify({'success': False, 'message': 'Error on create'})
 
-    return jsonify({'success': True, 'data': serialize_shop(new_shop)})
+    return jsonify({'success': True, 'shop': serialize_shop(new_shop)})
 
 
+# UPDATE A SHOP
 @app.route('{}/shop/<name>'.format(base_url), methods=['PUT'])
 @token_required
 def update_shop(current_user, name):
@@ -67,14 +79,15 @@ def update_shop(current_user, name):
     try:
         db.session.commit()
     except:
-        return jsonify({'success': False, 'message': 'Username already use'})
+        return jsonify({'success': False, 'message': 'Error on update'})
 
-    return jsonify({'success': True, 'data': serialize_shop(shop) })
+    return jsonify({'success': True, 'shop': serialize_shop(shop) })
 
 
+# DELETE A SHOP
 @app.route('{}/shop/<name>'.format(base_url), methods=['DELETE'])
 @token_required
-def delete_shop(current_user, username):
+def delete_shop(current_user, name):
     shop = Shop.query.filter_by(name=name).first()
 
     if not shop:
@@ -83,4 +96,4 @@ def delete_shop(current_user, username):
     db.session.delete(shop)
     db.session.commit()
 
-    return jsonify({'success': True, 'data': serialize_shop(shop)})
+    return jsonify({'success': True})

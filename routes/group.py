@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime
+import datetime
 from flask import request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -11,7 +11,8 @@ from model import *
 
 # GET ALL NETWORKS
 @app.route('{}/networks'.format(base_url), methods=['GET'])
-def get_all_group():
+@token_required
+def get_all_group(current_user):
     groups = Group.query.all()
 
     output = []
@@ -106,7 +107,7 @@ def post_message(current_user, name):
     if not Group:
         return jsonify({'success': False, 'message': 'No group found'})
     
-    post = Post(date=datetime.now().strftime("%d/%m/%Y-%H:%M"), content=data['content'])
+    post = Post(date=datetime.datetime.now().strftime("%d/%m/%Y-%H:%M"), content=data['content'])
     post.user = current_user # Add current user to the post as the sender
     group.posts.append(post)
 
@@ -245,4 +246,4 @@ def delete_group(current_user, name):
     db.session.delete(group)
     db.session.commit()
 
-    return jsonify({'success': True, 'data': serialize_network(group)})
+    return jsonify({'success': True})
