@@ -95,7 +95,7 @@ def serialize_shop(shop, user=None):
     return shop_data
 
 
-def serialize_category(category, shop=True):
+def serialize_category(category, shop=True, user=None):
     category_data = {}
 
     for key in Category.__dict__:
@@ -105,7 +105,7 @@ def serialize_category(category, shop=True):
     if shop:
         category_data['shops'] = []
         for shop in category.shops:
-            category_data['shops'].append(serialize_shop(shop))    
+            category_data['shops'].append(serialize_shop(shop, user=user))    
     else:
         del category_data['shops']
     

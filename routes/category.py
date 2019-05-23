@@ -14,7 +14,7 @@ def get_all_categories(current_user):
 
     output = []
     for category in categories:
-        output.append(serialize_category(category))
+        output.append(serialize_category(category, user=current_user))
 
     return jsonify({'success': True, 'categories': output})
     
