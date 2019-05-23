@@ -17,7 +17,7 @@ def get_all_shop(current_user):
 
     output = []
     for shop in shops:
-        output.append(serialize_shop(shop))
+        output.append(serialize_shop(shop, user=current_user))
 
     return jsonify({'success': True, 'shops': output})
 
@@ -35,7 +35,7 @@ def get_all_shops_category(current_user, category_name):
     output = []
     for shop in shops:
         if shop.category.name == category.name:
-            output.append(serialize_shop(shop))
+            output.append(serialize_shop(shop, user=current_user))
     
     return jsonify({'success': True, 'shops': output})
 
@@ -46,7 +46,7 @@ def get_all_shops_category(current_user, category_name):
 def get_all_shops_favorite(current_user):
     output = []
     for shop in current_user.favorite_shops:
-        output.append(serialize_shop(shop))
+        output.append(serialize_shop(shop, user=current_user))
     
     return jsonify({'success': True, 'shops': output})
 
@@ -60,7 +60,7 @@ def get_all_shops_location(current_user):
 
     output = []
     for shop in shops:
-        output.append(serialize_shop(shop))
+        output.append(serialize_shop(shop, user=current_user))
     
     # Sort by distance
     output = sort_by_distance(output, request.args.get('lat'), request.args.get('lng'))
@@ -77,13 +77,14 @@ def get_al_shops_interest(current_user):
     output = []
     for shop in shops:
         is_a_keyword = False
-        if len(current_user.interest) > 0 and shop.keywords and len(shop.keywords) > 0:
-            print(shop)
-            for keyword in shop.keywords:
-                if keyword in current_user.interest.split(','):
+        if current_user.interest and len(current_user.interest) > 0 and shop.keywords and len(shop.keywords) > 0:
+            for keyword in [k.lower() for k in shop.keywords.split(',')]:
+                if keyword in [i.lower() for i in current_user.interest.split(',')]:
                     is_a_keyword = True
             if is_a_keyword:
-                output.append(serialize_shop(shop))
+                output.append(serialize_shop(shop, user=current_user))
+        else:
+            return jsonify({'success': False, 'message': 'No interests given'})
 
     return jsonify({'success': True, 'shops': output})
 
@@ -97,7 +98,7 @@ def get_shop(current_user, name):
     if not shop:
         return jsonify({'success': False, 'message': 'No shop found'})
 
-    return jsonify({'success': True, 'shop': serialize_shop(shop)})
+    return jsonify({'success': True, 'shop': serialize_shop(shop, user=current_user)})
 
 
 # CREATE A SHOP

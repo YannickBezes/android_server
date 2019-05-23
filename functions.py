@@ -80,7 +80,7 @@ def serialize_network(network, only_message=False, only_sub_request=False):
     return network_data
 
 
-def serialize_shop(shop):
+def serialize_shop(shop, user=None):
     shop_data = {}
 
     for key in Shop.__dict__:
@@ -88,6 +88,9 @@ def serialize_shop(shop):
             shop_data[key] = getattr(shop, key)
     
     shop_data['category'] = serialize_category(shop.category, shop=False)
+
+    if user:
+        shop_data['is_fav'] = True if shop in user.favorite_shops else False
 
     return shop_data
 
