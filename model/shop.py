@@ -8,6 +8,7 @@ class Shop(db.Model):
     lat = db.Column(db.String(18))
     lng = db.Column(db.String(18))
     city = db.Column(db.String(30))
+    address = db.Column(db.String(80))
     
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
 
