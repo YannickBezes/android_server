@@ -89,6 +89,8 @@ def serialize_shop(shop, user=None, no_category=False):
     
     if not no_category:
         shop_data['category'] = serialize_category(shop.category, shop=False)
+    else:
+        del shop_data['category']
 
     if user:
         shop_data['is_fav'] = True if shop in user.favorite_shops else False
