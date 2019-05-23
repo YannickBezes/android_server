@@ -63,7 +63,7 @@ def create_user():
     return jsonify({'success': True, 'token': token.decode('UTF-8')})
 
 
-# ADD A SHOP TO FAVORITE_SHOPS
+# TOGGLE SHOP TO FAVORITE_SHOPS
 @app.route('{}/user/shop/<name>'.format(base_url), methods=['PUT'])
 @token_required
 def add_shop_to_user(current_user, name):
@@ -74,6 +74,8 @@ def add_shop_to_user(current_user, name):
 
     if shop not in current_user.favorite_shops:
         current_user.favorite_shops.append(shop)
+    else:
+        current_user.favorite_shops.remove(shop)
 
     db.session.commit()
     
@@ -99,23 +101,6 @@ def update_user(current_user):
         return jsonify({'success': False, 'message': 'Error on update'})
     
     return jsonify({'success': True, 'data': serialize_user(current_user) })
-
-
-# DElETE A SHOP TO FAVORITE_SHOPS
-@app.route('{}/user/shop/<name>'.format(base_url), methods=['DELETE'])
-@token_required
-def remove_shop_to_user(current_user, name):
-    shop = Shop.query.filter_by(name=name).first()
-
-    if not shop:
-        return jsonify({'success': False, 'message': 'Shop not found'})
-
-    if shop in current_user.favorite_shops:
-        current_user.favorite_shops.remove(shop)
-
-    db.session.commit()
-    
-    return jsonify({'success': True})
 
 
 # DELETE A USER
