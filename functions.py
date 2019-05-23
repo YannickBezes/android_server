@@ -80,17 +80,14 @@ def serialize_network(network, only_message=False, only_sub_request=False):
     return network_data
 
 
-def serialize_shop(shop, user=None, no_category=False):
+def serialize_shop(shop, user=None):
     shop_data = {}
 
     for key in Shop.__dict__:
         if key[0] != '_' and key not in ['id', 'category_id']:
             shop_data[key] = getattr(shop, key)
     
-    if not no_category:
-        shop_data['category'] = serialize_category(shop.category, shop=False)
-    else:
-        del shop_data['category']
+    shop_data['category'] = serialize_category(shop.category, shop=False)
 
     if user:
         shop_data['is_fav'] = True if shop in user.favorite_shops else False
@@ -108,7 +105,7 @@ def serialize_category(category, shop=True):
     if shop:
         category_data['shops'] = []
         for shop in category.shops:
-            category_data['shops'].append(serialize_shop(shop, no_category=True))    
+            category_data['shops'].append(serialize_shop(shop))    
     else:
         del category_data['shops']
     
