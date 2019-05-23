@@ -90,14 +90,14 @@ def update_user(current_user):
 
     for key in current_user.__dict__:
         if key in data.keys():
-            print("Key: {}, Value: {}".format(key, data[key]))
-            if key == 'password' and data['password'] and len(data['password']) > 0:
-                setattr(current_user, key, generate_password_hash(data['password'], method='sha512'))
+            if key == 'password':
+                if data['password'] and len(data['password']) > 0:
+                    setattr(current_user, key, generate_password_hash(data['password'], method='sha512'))
             elif key == 'interest':
                 setattr(current_user, key, data[key].replace(" ", ""))
             else:
                 setattr(current_user, key, data[key])
-
+                
     try:
         db.session.commit()
     except:
