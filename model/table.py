@@ -5,6 +5,11 @@ subs = db.Table('subs',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+fav_shops = db.Table('fav_shops',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('shop_id', db.Integer, db.ForeignKey('shop.id')),
+)
+
 sub_requests = db.Table('sub_requests', 
     db.Column('group_id', db.Integer, db.ForeignKey('group.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
