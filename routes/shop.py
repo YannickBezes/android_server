@@ -40,6 +40,17 @@ def get_all_shops_category(current_user, category_name):
     return jsonify({'success': True, 'shops': output})
 
 
+# GET ALL SHOPS WITCH ARE FAVORITE
+@app.route('{}/shops/favorite'.format(base_url), methods=['GET'])
+@token_required
+def get_all_shops_favorite(current_user):
+    output = []
+    for shop in current_user.favorite_shops:
+        output.append(serialize_shop(shop))
+    
+    return jsonify({'success': True, 'shops': output})
+
+
 # GET ALL SHOPS LOCATION
 @app.route('{}/shops/location'.format(base_url), methods=['GET'])
 @token_required
@@ -55,6 +66,27 @@ def get_all_shops_location(current_user):
     output = sort_by_distance(output, request.args.get('lat'), request.args.get('lng'))
 
     return jsonify({'success': True, 'shops': output})
+
+
+# GET SHOPS INTEREST
+@app.route('{}/shops/interest'.format(base_url), methods=['GET'])
+@token_required
+def get_al_shops_interest(current_user):
+    shops = Shop.query.all()
+
+    output = []
+    for shop in shops:
+        is_a_keyword = False
+        if len(current_user.interest) > 0 and shop.keywords and len(shop.keywords) > 0:
+            print(shop)
+            for keyword in shop.keywords:
+                if keyword in current_user.interest.split(','):
+                    is_a_keyword = True
+            if is_a_keyword:
+                output.append(serialize_shop(shop))
+
+    return jsonify({'success': True, 'shops': output})
+
 
 # GET A SHOP
 @app.route('{}/shop/<name>'.format(base_url), methods=['GET'])
