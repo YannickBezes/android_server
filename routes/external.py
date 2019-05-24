@@ -43,5 +43,10 @@ def get_news(current_user):
     
     res = requests.get(url=url, params=params)
     data = res.json()
+    
+    output = parse_articles(data)
 
-    return jsonify({'success': True, 'articles': parse_articles(data)})
+    if len(output) == 0:
+        return jsonify({'success': False})
+
+    return jsonify({'success': True, 'articles': output})
