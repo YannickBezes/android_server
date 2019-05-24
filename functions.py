@@ -70,7 +70,7 @@ def serialize_network(network, only_message=False, only_sub_request=False):
         for post in network.posts:
             network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
         
-        network_data['post'] = sort_by_date(network_data['posts'])
+        network_data['posts'] = sort_by_date(network_data['posts'])
     else:
         # If we want only sub request create a list with all sub requests
         network_data = []
@@ -201,5 +201,4 @@ def sort_by_date(arr):
             pos -= 1
         # Break and do the final swap
         arr[pos] = cursor
-
     return arr
