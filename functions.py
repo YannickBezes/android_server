@@ -111,6 +111,17 @@ def serialize_category(category, shop=True, user=None):
     
     return category_data
 
+
+def serialize_pub(pub):
+    pub_data = {}
+
+    for key in Pub.__dict__:
+        if key[0] != '_' and key not in ['id']:
+            pub_data[key] = getattr(pub, key)
+
+    return pub_data
+
+
 def parse_weather(weather):
     output = {}
 
@@ -128,9 +139,14 @@ def parse_weather(weather):
                         output[key] = weather[key]['all']
                     else:
                         output[key] = weather[key]
-
-                        if not weather['wind']['deg']:
-                            output['wind']['deg'] = 0
+    
+    # Check if the wind have the value deg elese add it
+    has_deg = False
+    for key in weather['wind']:
+        if key == 'deg':
+            has_deg = True
+    if not has_deg:
+        output['wind']['deg'] = 0
 
     del output['icon'], output['id']
     return output
@@ -152,7 +168,6 @@ def parse_articles(articles):
         output.append(article)
 
     return output
-
 
 def distance(lat_1, lng_1, lat_2, lng_2):
     D = decimal.Decimal

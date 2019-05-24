@@ -110,15 +110,20 @@ def create_shop(current_user):
     # Get the category
     category = Category.query.filter_by(name=data['category']).first()
 
-    if not category:
-        return jsonify({'success': False, 'message': 'No category found'})
+    if not category: # If the category doesn't exist create it 
+        category = Category()
+        category.name = data['category']
+        db.session.add(category)
     data['category'] = category # Replace category string by an instance of category
 
     # Add all properties
     new_shop = Shop()
     for key in Shop.__dict__:
         if key in data.keys():
-            setattr(new_shop, key, data[key])
+            if key == 'keywords':
+                setattr(new_shop, key, ",".join([d.lower() for d in data[key].split(",")]))
+            else:
+                setattr(new_shop, key, data[key])
 
     db.session.add(new_shop)
     try:
