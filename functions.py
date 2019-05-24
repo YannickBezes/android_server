@@ -129,6 +129,9 @@ def parse_weather(weather):
                     else:
                         output[key] = weather[key]
 
+                        if not weather['wind']['deg']:
+                            output['wind']['deg'] = 0
+
     del output['icon'], output['id']
     return output
 
