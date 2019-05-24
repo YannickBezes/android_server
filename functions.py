@@ -70,7 +70,7 @@ def serialize_network(network, only_message=False, only_sub_request=False):
         for post in network.posts:
             network_data['posts'].append({"sender": post.user.username, "date": post.date, "content": post.content})
         
-        network_data['posts'].reverse() # Reverse to add the last post in first
+        network_data['post'] = sort_by_date(network_data['posts'])
     else:
         # If we want only sub request create a list with all sub requests
         network_data = []
@@ -182,6 +182,21 @@ def sort_by_distance(arr, lat, lng):
         pos = i
         
         while pos > 0 and distance(lat, lng, arr[pos - 1]['lat'], arr[pos - 1]['lng']) > distance(lat, lng, cursor['lat'], cursor['lng']):
+            # Swap the number down the list
+            arr[pos] = arr[pos - 1]
+            pos -= 1
+        # Break and do the final swap
+        arr[pos] = cursor
+
+    return arr
+
+
+def sort_by_date(arr):
+    for i in range(len(arr)):
+        cursor = arr[i]
+        pos = i
+        
+        while pos > 0 and datetime.datetime.strptime(arr[pos - 1]['date'], "%d/%m/%Y-%H:%M").timestamp() < datetime.datetime.strptim(cursor['date'], "%d/%m/%Y-%H:%M").timestamp():
             # Swap the number down the list
             arr[pos] = arr[pos - 1]
             pos -= 1
