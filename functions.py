@@ -195,8 +195,7 @@ def sort_by_date(arr):
     for i in range(len(arr)):
         cursor = arr[i]
         pos = i
-        
-        while pos > 0 and datetime.datetime.timestamp(datetime.datetime.strptime(arr[pos - 1]['date'], "%d/%m/%Y-%H:%M")) < datetime.datetime.timestamp(datetime.datetime.strptim(cursor['date'], "%d/%m/%Y-%H:%M")):
+        while pos > 0 and datetime.datetime.strptime(arr[pos - 1]['date'], "%d/%m/%Y-%H:%M") < datetime.datetime.strptime(cursor['date'], "%d/%m/%Y-%H:%M"):
             # Swap the number down the list
             arr[pos] = arr[pos - 1]
             pos -= 1
